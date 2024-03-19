@@ -16,21 +16,25 @@
 
 package com.example.schedulingtasks;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import static org.awaitility.Awaitility.await;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-class SchedulingTasksApplicationTests {
-    @Autowired
-    private ScheduledTasks tasks;
+public class ScheduledTasksTest {
+    @SpyBean
+    ScheduledTasks tasks;
 
     @Test
-    public void contextLoads() {
-        // Basic integration test that shows the context starts up properly
-        assertThat(tasks).isNotNull();
+    public void reportCurrentTime() {
+        await().atMost(Durations.TEN_SECONDS).untilAsserted(() -> {
+            verify(tasks, atLeast(2)).reportCurrentTime();
+        });
     }
 }
